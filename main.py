@@ -21,10 +21,9 @@ yks_mesaji = (
     f" {minutes} dakika"
 )
 
-# Motivasyon cümlelerini harici motivasyon.txt dosyasından okuyoruz
+# Motivasyon cümlelerini motivasyon.txt dosyasından okuyoruz
 try:
   with open("motivasyon.txt", "r", encoding="utf-8") as f:
-    # Boş satırları filtreleyerek listeye atıyoruz
     motivasyon_cumleleri = [
         line.strip() for line in f.readlines() if line.strip()
     ]
