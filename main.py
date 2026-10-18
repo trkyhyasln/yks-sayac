@@ -16,10 +16,7 @@ days = remaining.days
 hours = remaining.seconds // 3600
 minutes = (remaining.seconds % 3600) // 60
 
-yks_mesaji = (
-    f"⏳ *2027 YKS Geri Sayım*:\nKalan Süre: {days} gün, {hours} saat,"
-    f" {minutes} dakika"
-)
+yks_mesaji = f"YKS 2027 Geri Sayim: {days} gun, {hours} saat, {minutes} dakika kaldi!"
 
 # Motivasyon cümlelerini motivasyon.txt dosyasından okuyoruz
 try:
@@ -44,12 +41,16 @@ else:
   mesaj = f"{secilen_motivasyon}"
   print(f"Sadece Motivasyon gönderiliyor (Saat: {current_hour}:00)...")
 
-# CallMeBot WhatsApp API (90 eklendi)
+# CallMeBot WhatsApp API (90 alan kodu ile)
 phone = "905510050230"
 apikey = "8937901"
-url = f"https://api.callmebot.com/whatsapp.php?phone={phone}&text={requests.utils.quote(mesaj)}&apikey={apikey}"
 
-response = requests.get(url)
+# URL parametrelerini requests kütüphanesinin kendisinin güvenli kodlamasını sağlıyoruz
+payload = {"phone": phone, "text": mesaj, "apikey": apikey}
+
+url = "https://api.callmebot.com/whatsapp.php"
+
+response = requests.get(url, params=payload)
 
 print("CallMeBot Sunucu Yanıtı:", response.text)
 
