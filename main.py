@@ -16,7 +16,7 @@ days = remaining.days
 hours = remaining.seconds // 3600
 minutes = (remaining.seconds % 3600) // 60
 
-yks_mesaji = f"YKS 2027 Geri Sayim: {days} gun, {hours} saat, {minutes} dakika kaldi!"
+yks_mesaji = f"YKS 2027 Kalan: {days} gun {hours} saat"
 
 # Motivasyon cümlelerini motivasyon.txt dosyasından okuyoruz
 try:
@@ -26,36 +26,33 @@ try:
     ]
   secilen_motivasyon = random.choice(motivasyon_cumleleri)
 except Exception as e:
-  secilen_motivasyon = (
-      "Motivasyon dosyası okunamadı ama sen yine de çalış!"
-  )
-  print("Dosya okuma hatası:", e)
+  secilen_motivasyon = "Calismaya devam et."
 
 # YKS Sayacının atılacağı saatler (07:00, 08:00, 13:00, 18:00)
 yks_saatleri = [7, 8, 13, 18]
 
 if current_hour in yks_saatleri:
-  mesaj = f"{yks_mesaji}\n\n{secilen_motivasyon}"
-  print(f"YKS Sayacı + Motivasyon gönderiliyor (Saat: {current_hour}:00)...")
+  ham_mesaj = f"{yks_mesaji} - {secilen_motivasyon}"
 else:
-  mesaj = f"{secilen_motivasyon}"
-  print(f"Sadece Motivasyon gönderiliyor (Saat: {current_hour}:00)...")
+  ham_mesaj = f"{secilen_motivasyon}"
 
-# CallMeBot WhatsApp API (90 alan kodu ile)
+# CallMeBot için metni tam uyumlu formata getiriyoruz
+encoded_text = requests.utils.quote(ham_mesaj)
+
 phone = "905510050230"
 apikey = "8937901"
 
-# URL parametrelerini requests kütüphanesinin kendisinin güvenli kodlamasını sağlıyoruz
-payload = {"phone": phone, "text": mesaj, "apikey": apikey}
+# Doğrudan tarayıcıda tıkladığın formatın birebir aynısını Python ile oluşturuyoruz
+url = f"https://api.callmebot.com/whatsapp.php?phone={phone}&text={encoded_text}&apikey={apikey}"
 
-url = "https://api.callmebot.com/whatsapp.php"
+print("İstek atılan URL:", url)
 
-response = requests.get(url, params=payload)
+response = requests.get(url)
 
 print("CallMeBot Sunucu Yanıtı:", response.text)
 
 if response.status_code == 200:
-  print("İstek sunucuya başarıyla iletildi.")
+  print("İstek başarıyla iletildi.")
 else:
-  print("Bağlantı hatası oluştu, HTTP Kodu:", response.status_code)
-    
+  print("Bağlantı hatası, HTTP Kodu:", response.status_code)
+  
