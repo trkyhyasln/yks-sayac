@@ -44,8 +44,8 @@ else:
   mesaj = f"{secilen_motivasyon}"
   print(f"Sadece Motivasyon gönderiliyor (Saat: {current_hour}:00)...")
 
-# CallMeBot WhatsApp API
-phone = "5510050230"
+# CallMeBot WhatsApp API (90 eklendi)
+phone = "905510050230"
 apikey = "8937901"
 url = f"https://api.callmebot.com/whatsapp.php?phone={phone}&text={requests.utils.quote(mesaj)}&apikey={apikey}"
 
