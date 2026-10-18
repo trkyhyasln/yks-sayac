@@ -21,7 +21,7 @@ yks_mesaji = (
     f" {minutes} dakika"
 )
 
-# 100 Adet Orijinal Motivasyon Cümlesi Listesi
+# 100 Adet Motivasyon Cümlesi Listesi
 motivasyon_cumleleri = [
     (
         "1. 27 netlik o boktan tabloyu unuttun mu sen orospu çocuğu? Fatih’teki"
@@ -446,158 +446,10 @@ url = f"https://api.callmebot.com/whatsapp.php?phone={phone}&text={requests.util
 
 response = requests.get(url)
 
-# CallMeBot'un WhatsApp'a mesajı iletip iletmediğini net görmek için log basıyoruz:
 print("CallMeBot Sunucu Yanıtı:", response.text)
 
 if response.status_code == 200:
   print("İstek sunucuya başarıyla iletildi.")
 else:
   print("Bağlantı hatası oluştu, HTTP Kodu:", response.status_code)
-ha yaşarsın."
-    ),
-    (
-        "71. Paragraf çözmekten kaçıyorsan rakipler seni sollar. 5 saatlik"
-        " disiplini bozma amına koyayım."
-    ),
-    (
-        "72. Deneme analizi yapmadan “yeter” diyen tembel. Fatih’teki Beyazıt’ı"
-        " düşün ve otur."
-    ),
-    (
-        "73. 27 netlik o rezaleti unuttun mu? Unutma, çünkü hâlâ aynı orospu"
-        " çocuğusun."
-    ),
-    (
-        "74. Grammar çalışmak yerine “yorgunum” diyen herkes gibi sen de"
-        " başarısız kalacaksın."
-    ),
-    (
-        "75. Problem çözmeyi bırakırsan TYT’de de YDT’de de sıfır. 5 saati doldur"
-        " piç."
-    ),
-    (
-        "76. Masadan kaçtığın an derece hayali siktir olur. Rakipleri ezip geçmek"
-        " için kan ter dök."
-    ),
-    (
-        "77. Türkçe dil bilgisi çalışmıyorsan dil bölümü hayali kurma. Beyazıt’ı"
-        " hak et."
-    ),
-    (
-        "78. Reading çalışmak yerine telefonuna bakıyorsan o kampüse asla"
-        " giremezsin. Kalk."
-    ),
-    (
-        "79. Paragraf çözmekten kaçıyorsan zaten 27 nette kalırsın. 5 saatlik"
-        " programı bozma."
-    ),
-    (
-        "80. Rakip biçme gününde deneme çözüp neşter analizi yapmazsan rakiplerin"
-        " seni ezer."
-    ),
-    (
-        "81. Masaya çivilen, yoksa Fatih Kampüsü senden uzaklaşır. Otur amına"
-        " koyayım."
-    ),
-    (
-        "82. 27 netlik o utancı yüzüne tükürüyorum. Hâlâ aynı iradesiz göt gibi"
-        " davranıyorsun."
-    ),
-    (
-        "83. Grammar skill çalışmak yerine mola veriyorsan derece yapamazsın."
-        " Beyazıt’ı düşün."
-    ),
-    (
-        "84. Problem çözmekten kaçıyorsan TYT’de de batarsın. 5 saati tamamla, yoksa"
-        " siktir et."
-    ),
-    (
-        "85. Sosyal fen çalışmıyorsan zaten başarısızsın. Rakipleri ezip geçmek"
-        " için otur piç."
-    ),
-    (
-        "86. Masadan kaçtığın her saniye 27 netlik rezaleti büyütüyorsun. Neşter’i"
-        " unutma."
-    ),
-    (
-        "87. Reading çalışmak yerine rehavete kapılıyorsan o kampüse giremezsin."
-        " Kalk orospu çocuğu."
-    ),
-    (
-        "88. Paragraf çözmekten kaçıyorsan rakipler seni sollar. 5 saatlik"
-        " disiplini bozma."
-    ),
-    (
-        "89. Deneme analizi yapmadan “yeterli” diyen tembel. Fatih’teki o tarihi"
-        " kapıyı hak et."
-    ),
-    (
-        "90. 27 netlik o rezaleti unuttun mu? Unutma, çünkü hâlâ aynı tembel"
-        " piçsin."
-    ),
-    (
-        "91. Grammar’ı yarım bırakırsan İngiliz Dili ve Edebiyatı’na değil, arka"
-        " sıraya layıksın."
-    ),
-    (
-        "92. Problem çözmeyi bırakırsan derece hayali siktir olur. 5 saati"
-        " doldur amına koyayım."
-    ),
-    (
-        "93. Masaya çivilenmediğin her dakika rakipler seni eziyor. Beyazıt’ı"
-        " düşün ve otur."
-    ),
-    (
-        "94. Türkçe dil bilgisi çalışmıyorsan dil bölümü hayali kurma. 27 netlik"
-        " tabloyu hatırla."
-    ),
-    (
-        "95. Reading skill çalışmak yerine telefonuna bakıyorsan o kampüse asla"
-        " giremezsin."
-    ),
-    (
-        "96. Paragraf çözmekten kaçıyorsan zaten başarısızsın. 5 saatlik programı"
-        " bozma göt."
-    ),
-    (
-        "97. Rakip biçme gününde deneme çözüp analiz yapmazsan rakiplerin seni"
-        " ezer geçer."
-    ),
-    (
-        "98. Masadan kaçtığın an Fatih Kampüsü senden uzaklaşır. Neşter’i"
-        " unutma, otur çalış."
-    ),
-    (
-        "99. 27 netlik o utancı yüzüne tükürüyorum. Hâlâ aynı iradesiz orospu"
-        " çocuğusun, kalk ve 5 saati doldur."
-    ),
-    (
-        "100. Beyazıt’ın o tarihi kapısından geçmek istiyorsan masaya çivilen,"
-        " rakipleri ez, neşter at, 5 saati tamamla. Yoksa 27 netlik o rezaleti"
-        " sonsuza kadar yaşarsın piç.",
-    ),
-]
-
-secilen_motivasyon = random.choice(motivasyon_cumleleri)
-
-# YKS Sayacının atılacağı saatler (07:00, 08:00, 13:00, 18:00)
-yks_saatleri = [7, 8, 13, 18]
-
-if current_hour in yks_saatleri:
-  mesaj = f"{yks_mesaji}\n\n{secilen_motivasyon}"
-  print(f"YKS Sayacı + Motivasyon gönderiliyor (Saat: {current_hour}:00)...")
-else:
-  mesaj = f"{secilen_motivasyon}"
-  print(f"Sadece Motivasyon gönderiliyor (Saat: {current_hour}:00)...")
-
-# CallMeBot WhatsApp API
-phone = "5510050230"
-apikey = "8937901"
-url = f"https://api.callmebot.com/whatsapp.php?phone={phone}&text={requests.utils.quote(mesaj)}&apikey={apikey}"
-
-response = requests.get(url)
-if response.status_code == 200:
-  print("Mesaj başarıyla gönderildi!")
-else:
-  print("Hata oluştu:", response.text)
-  
+    
