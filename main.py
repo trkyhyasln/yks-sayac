@@ -1,34 +1,452 @@
-from datetime import datetime, timedelta, timezone
-import urllib.parse
+from datetime import datetime
+import random
+import pytz
 import requests
 
-# Türkiye saat dilimi (UTC+3)
-tr_offset = timezone(timedelta(hours=3))
-simdi = datetime.now(tr_offset)
+# Türkiye saat dilimini ayarla
+turkey_tz = pytz.timezone('Europe/Istanbul')
+now = datetime.now(turkey_tz)
+current_hour = now.hour
 
-# 2027 YKS Tarihi: 19 Haziran 2027, Saat 10:15
-hedef = datetime(2027, 6, 19, 10, 15, 0, tzinfo=tr_offset)
+# 2027 YKS Geri Sayım Hesabı
+target_date = datetime(2027, 6, 19, 10, 0, 0, tzinfo=turkey_tz)
+remaining = target_date - now
 
-fark = hedef - simdi
-saniye = int(fark.total_seconds())
+days = remaining.days
+hours = remaining.seconds // 3600
+minutes = (remaining.seconds % 3600) // 60
 
-if saniye > 0:
-  gun = saniye // 86400
-  saat = (saniye % 86400) // 3600
-  dakika = (saniye % 3600) // 60
-  mesaj = (
-      f'🎯 2027 YKS Geri Sayım:\n⏳ {gun} gün, {saat} saat,'
-      f' {dakika} dakika kaldı! Hedefe tam gaz devam! 🚀'
-  )
+yks_mesaji = (
+    f"⏳ *2027 YKS Geri Sayım*:\nKalan Süre: {days} gün, {hours} saat,"
+    f" {minutes} dakika"
+)
+
+# 100 Adet Orijinal Motivasyon Cümlesi Listesi
+motivasyon_cumleleri = [
+    (
+        "1. 27 netlik o boktan tabloyu unuttun mu sen orospu çocuğu? Fatih’teki"
+        " Beyazıt’ı unut, o kampüse giremezsin bu iradesizlikle."
+    ),
+    (
+        "2. Masadan kaçtığın her saniye rakiplerin seni eziyor, sen de götünü"
+        " kaşıyorsun. 5 saati tamamlamadan ayağa kalkma amına koyayım."
+    ),
+    (
+        "3. Tembellik yapıp “yorgunum” diye mızmızlanan herkes gibi sen de 27"
+        " nette kalacaksın. Beyazıt’ın tarihi kapısından geçmek istiyorsan o"
+        " götünü kaldır."
+    ),
+    (
+        "4. Paragraf çözmekten kaçıyorsan zaten İngiliz Dili ve Edebiyatı’na"
+        " değil, evinin önündeki kahveye layıksın. Neşter analizini unutma piç."
+    ),
+    (
+        "5. 5 saatlik disiplini bırakıp telefonuna bakan her orospu çocuğu gibi"
+        " sen de derece hayalini siktir et. Rakipler seni eziyor, sen hâlâ"
+        " mola veriyorsun."
+    ),
+    (
+        "6. 27 netlik o rezaleti yüzüne tükürüyorum. Fatih Kampüsü’nde dolaşmak"
+        " istiyorsan masaya çivilen, yoksa evinde ağla."
+    ),
+    (
+        "7. Grammar çalışmak yerine “yarın yaparım” diyen iradesiz göt. Beyazıt’ı"
+        " unut, oraya derece yapanlar girer, sen değil."
+    ),
+    (
+        "8. Problem çözmekten kaçıyorsan TYT’de de YDT’de de sıfır çekersin. 5"
+        " saati doldurmadan ayağa kalkarsan ananı sikerim."
+    ),
+    (
+        "9. Rakip biçme gününde deneme çözüp neşter analizi yapmazsan rakiplerin"
+        " seni ezer geçer. Tembel piç, kalk çalış."
+    ),
+    (
+        "10. Masadan kaçtığın her dakika 27 netlik o utancı büyütüyorsun."
+        " Fatih’teki o tarihi binaları hayal et ve otur amına koyayım."
+    ),
+    (
+        "11. Türkçe dil bilgisi çalışmıyorsan zaten dil bölümü hayali kurma."
+        " Beyazıt’a girenler irade sahibi, sen değil."
+    ),
+    (
+        "12. 5 saatlik programı yarım bırakıp “yeter” diyen herkes gibi sen de"
+        " başarısız kalacaksın. Rakipleri ezip geçmek istiyorsan otur."
+    ),
+    (
+        "13. Reading skill çalışmak yerine rehavete kapılıyorsan o 27 netlik"
+        " tabloyu bir daha yaşarsın. Neşter’i unutma orospu çocuğu."
+    ),
+    (
+        "14. Sosyal fen çalışmaktan kaçıyorsan TYT’de de batarısın. Fatih"
+        " Kampüsü’nü unut, oraya tembel götler girmez."
+    ),
+    (
+        "15. Masaya çivilenmediğin her saniye rakiplerin seni solluyor. 5 saati"
+        " tamamla, yoksa derece hayali siktir et."
+    ),
+    (
+        "16. 27 netlik o rezaleti unuttun mu? Unutma, çünkü hâlâ aynı iradesiz"
+        " piçsin. Beyazıt’ı hak etmek için kan ter dök."
+    ),
+    (
+        "17. Paragrafı bırakıp “zor geliyor” diyen tembel. Rakipleri ezip geçmek"
+        " istiyorsan o götünü kaldır ve çöz."
+    ),
+    (
+        "18. YDT Grammar’ı yarım bırakırsan İngiliz Dili ve Edebiyatı’na değil,"
+        " arka sıraya layıksın. 5 saati doldur amına koyayım."
+    ),
+    (
+        "19. Deneme analizi yapmadan “yeterli” diyen her orospu çocuğu gibi sen"
+        " de batarısın. Neşter gününü unutma."
+    ),
+    (
+        "20. Masadan kaçtığın an 27 netlik o utancı tekrar yaşarsın. Fatih’teki"
+        " Beyazıt’ı düşün ve otur."
+    ),
+    (
+        "21. Problem çözmekten kaçıyorsan TYT’de de sıfır. Rakipler seni eziyor,"
+        " sen hâlâ mola veriyorsun piç."
+    ),
+    (
+        "22. 5 saatlik disiplini bozan her tembel gibi sen de derece yapamazsın."
+        " Beyazıt’ı unut, oraya irade girer."
+    ),
+    (
+        "23. Reading çalışmak yerine telefonuna bakıyorsan o kampüse asla"
+        " giremezsin. Kalk çalış orospu çocuğu."
+    ),
+    (
+        "24. Türkçe dil bilgisi çalışmıyorsan zaten dil bölümü hayali kurma. 27"
+        " netlik tabloyu hatırla ve utançtan otur."
+    ),
+    (
+        "25. Rakip biçme gününde deneme çözüp analiz yapmazsan rakiplerin seni"
+        " ezer. Neşter’i unutma göt."
+    ),
+    (
+        "26. Masaya çivilenmediğin her dakika Fatih’teki o tarihi kapı senden"
+        " uzaklaşıyor. 5 saati doldur."
+    ),
+    (
+        "27. 27 netlik o rezaleti yüzüne tükürüyorum. Hâlâ aynı tembelsin, hâlâ"
+        " aynı iradesiz piçsin."
+    ),
+    (
+        "28. Grammar skill çalışmak yerine “yorgunum” diyen herkes gibi sen de"
+        " başarısız kalacaksın. Beyazıt’ı hak et."
+    ),
+    (
+        "29. Paragraf çözmekten kaçıyorsan rakipler seni sollar. 5 saatlik"
+        " programı bozma amına koyayım."
+    ),
+    (
+        "30. Fen sosyal çalışmıyorsan TYT’de de batarsın. Fatih Kampüsü’ne girmek"
+        " istiyorsan otur ve çalış."
+    ),
+    (
+        "31. Masadan kaçtığın an derece hayali siktir olur. Rakipleri ezip geçmek"
+        " için kan ter dök."
+    ),
+    (
+        "32. 27 netlik o utancı unuttun mu? Unutma, çünkü hâlâ aynı göt gibi"
+        " davranıyorsun."
+    ),
+    (
+        "33. YDT Reading çalışmak yerine rehavete kapılıyorsan o kampüse asla"
+        " giremezsin. Kalk piç."
+    ),
+    (
+        "34. Problem çözmeyi bırakırsan TYT’de de YDT’de de sıfır. 5 saati"
+        " tamamla, yoksa siktir et."
+    ),
+    (
+        "35. Deneme analizi yapmadan “yeter” diyen tembel. Neşter gününü unutma,"
+        " rakipler seni eziyor."
+    ),
+    (
+        "36. Masaya çivilen, yoksa 27 netlik tabloyu bir daha yaşarsın. Beyazıt’ı"
+        " düşün amına koyayım."
+    ),
+    (
+        "37. Türkçe dil bilgisi çalışmıyorsan dil bölümü hayali kurma. Fatih’teki"
+        " o tarihi binaları hak et."
+    ),
+    (
+        "38. 5 saatlik disiplini bozan her orospu çocuğu gibi sen de derece"
+        " yapamazsın. Otur çalış."
+    ),
+    (
+        "39. Grammar’ı yarım bırakırsan İngiliz Dili ve Edebiyatı’na değil, arka"
+        " sıraya layıksın. Rakipleri ez."
+    ),
+    (
+        "40. Paragraf çözmekten kaçıyorsan zaten başarısızsın. 27 netlik rezaleti"
+        " hatırla ve utançtan otur."
+    ),
+    (
+        "41. Masadan kaçtığın her saniye Fatih Kampüsü senden uzaklaşıyor. 5"
+        " saati doldur piç."
+    ),
+    (
+        "42. Reading skill çalışmak yerine telefonuna bakıyorsan o derece hayali"
+        " siktir olur. Kalk."
+    ),
+    (
+        "43. Sosyal fen çalışmıyorsan TYT’de de batarsın. Beyazıt’ı unut, oraya"
+        " tembel götler girmez."
+    ),
+    (
+        "44. Rakip biçme gününde deneme çözüp neşter analizi yapmazsan rakiplerin"
+        " seni ezer geçer."
+    ),
+    (
+        "45. 27 netlik o rezaleti yüzüne tükürüyorum. Hâlâ aynı iradesiz orospu"
+        " çocuğusun."
+    ),
+    (
+        "46. Problem çözmekten kaçıyorsan derece yapamazsın. 5 saatlik programı"
+        " bozma amına koyayım."
+    ),
+    (
+        "47. Grammar çalışmak yerine “yarın” diyen tembel. Fatih’teki Beyazıt’ı"
+        " düşün ve otur."
+    ),
+    (
+        "48. Masaya çivilenmediğin her dakika rakipler seni solluyor. Neşter’i"
+        " unutma göt."
+    ),
+    (
+        "49. Türkçe dil bilgisi çalışmıyorsan dil bölümü hayali kurma. 27 netlik"
+        " tabloyu hatırla."
+    ),
+    (
+        "50. 5 saati tamamlamadan ayağa kalkarsan ananı sikerim. Beyazıt’ı hak"
+        " etmek için çalış."
+    ),
+    (
+        "51. Reading çalışmak yerine rehavete kapılıyorsan o kampüse asla"
+        " giremezsin. Kalk piç."
+    ),
+    (
+        "52. Paragraf çözmekten kaçıyorsan rakipler seni ezer. 5 saatlik disiplini"
+        " bozma."
+    ),
+    (
+        "53. Deneme analizi yapmadan “yeterli” diyen herkes gibi sen de"
+        " batarısın. Neşter günü unutma."
+    ),
+    (
+        "54. Masadan kaçtığın an 27 netlik utancı tekrar yaşarsın. Fatih"
+        " Kampüsü’nü düşün."
+    ),
+    (
+        "55. Fen sosyal çalışmıyorsan TYT’de de sıfır. Rakipleri ezip geçmek için"
+        " otur."
+    ),
+    (
+        "56. 27 netlik o rezaleti unuttun mu? Unutma, çünkü hâlâ aynı tembel göt"
+        " gibi davranıyorsun."
+    ),
+    (
+        "57. Grammar skill çalışmak yerine mola veriyorsan derece hayali siktir"
+        " olur. Beyazıt’ı hak et."
+    ),
+    (
+        "58. Problem çözmeyi bırakırsan TYT’de de YDT’de de batarsın. 5 saati"
+        " doldur amına koyayım."
+    ),
+    (
+        "59. Masaya çivilen, yoksa rakipler seni ezer geçer. Fatih’teki o tarihi"
+        " kapıyı düşün."
+    ),
+    (
+        "60. Türkçe dil bilgisi çalışmıyorsan dil bölümü hayali kurma. 27 netlik"
+        " tabloyu yüzüne vuruyorum."
+    ),
+    (
+        "61. Reading çalışmak yerine telefonuna bakıyorsan o kampüse giremezsin."
+        " Kalk orospu çocuğu."
+    ),
+    (
+        "62. Paragraf çözmekten kaçıyorsan zaten başarısızsın. 5 saatlik programı"
+        " bozma piç."
+    ),
+    (
+        "63. Rakip biçme gününde deneme çözüp analiz yapmazsan rakiplerin seni"
+        " sollar. Neşter’i unutma."
+    ),
+    (
+        "64. Masadan kaçtığın her saniye Fatih Kampüsü senden uzaklaşıyor. Otur ve"
+        " çalış."
+    ),
+    (
+        "65. 27 netlik o utancı yüzüne tükürüyorum. Hâlâ aynı iradesiz tembelsin."
+    ),
+    (
+        "66. Grammar’ı yarım bırakırsan İngiliz Dili ve Edebiyatı’na değil, arka"
+        " sıraya layıksın."
+    ),
+    (
+        "67. Problem çözmekten kaçıyorsan derece yapamazsın. 5 saati tamamla, yoksa"
+        " siktir et."
+    ),
+    (
+        "68. Sosyal fen çalışmıyorsan TYT’de de batarsın. Beyazıt’ı unut, oraya"
+        " irade girer."
+    ),
+    (
+        "69. Masaya çivilenmediğin her dakika rakipler seni eziyor. Neşter"
+        " analizini unutma göt."
+    ),
+    (
+        "70. Reading skill çalışmak yerine rehavete kapılıyorsan o 27 netlik"
+        " tabloyu bir daha yaşarsın."
+    ),
+    (
+        "71. Paragraf çözmekten kaçıyorsan rakipler seni sollar. 5 saatlik"
+        " disiplini bozma amına koyayım."
+    ),
+    (
+        "72. Deneme analizi yapmadan “yeter” diyen tembel. Fatih’teki Beyazıt’ı"
+        " düşün ve otur."
+    ),
+    (
+        "73. 27 netlik o rezaleti unuttun mu? Unutma, çünkü hâlâ aynı orospu"
+        " çocuğusun."
+    ),
+    (
+        "74. Grammar çalışmak yerine “yorgunum” diyen herkes gibi sen de"
+        " başarısız kalacaksın."
+    ),
+    (
+        "75. Problem çözmeyi bırakırsan TYT’de de YDT’de de sıfır. 5 saati doldur"
+        " piç."
+    ),
+    (
+        "76. Masadan kaçtığın an derece hayali siktir olur. Rakipleri ezip geçmek"
+        " için kan ter dök."
+    ),
+    (
+        "77. Türkçe dil bilgisi çalışmıyorsan dil bölümü hayali kurma. Beyazıt’ı"
+        " hak et."
+    ),
+    (
+        "78. Reading çalışmak yerine telefonuna bakıyorsan o kampüse asla"
+        " giremezsin. Kalk."
+    ),
+    (
+        "79. Paragraf çözmekten kaçıyorsan zaten 27 nette kalırsın. 5 saatlik"
+        " programı bozma."
+    ),
+    (
+        "80. Rakip biçme gününde deneme çözüp neşter analizi yapmazsan rakiplerin"
+        " seni ezer."
+    ),
+    (
+        "81. Masaya çivilen, yoksa Fatih Kampüsü senden uzaklaşır. Otur amına"
+        " koyayım."
+    ),
+    (
+        "82. 27 netlik o utancı yüzüne tükürüyorum. Hâlâ aynı iradesiz göt gibi"
+        " davranıyorsun."
+    ),
+    (
+        "83. Grammar skill çalışmak yerine mola veriyorsan derece yapamazsın."
+        " Beyazıt’ı düşün."
+    ),
+    (
+        "84. Problem çözmekten kaçıyorsan TYT’de de batarsın. 5 saati tamamla, yoksa"
+        " siktir et."
+    ),
+    (
+        "85. Sosyal fen çalışmıyorsan zaten başarısızsın. Rakipleri ezip geçmek"
+        " için otur piç."
+    ),
+    (
+        "86. Masadan kaçtığın her saniye 27 netlik rezaleti büyütüyorsun. Neşter’i"
+        " unutma."
+    ),
+    (
+        "87. Reading çalışmak yerine rehavete kapılıyorsan o kampüse giremezsin."
+        " Kalk orospu çocuğu."
+    ),
+    (
+        "88. Paragraf çözmekten kaçıyorsan rakipler seni sollar. 5 saatlik"
+        " disiplini bozma."
+    ),
+    (
+        "89. Deneme analizi yapmadan “yeterli” diyen tembel. Fatih’teki o tarihi"
+        " kapıyı hak et."
+    ),
+    (
+        "90. 27 netlik o rezaleti unuttun mu? Unutma, çünkü hâlâ aynı tembel"
+        " piçsin."
+    ),
+    (
+        "91. Grammar’ı yarım bırakırsan İngiliz Dili ve Edebiyatı’na değil, arka"
+        " sıraya layıksın."
+    ),
+    (
+        "92. Problem çözmeyi bırakırsan derece hayali siktir olur. 5 saati"
+        " doldur amına koyayım."
+    ),
+    (
+        "93. Masaya çivilenmediğin her dakika rakipler seni eziyor. Beyazıt’ı"
+        " düşün ve otur."
+    ),
+    (
+        "94. Türkçe dil bilgisi çalışmıyorsan dil bölümü hayali kurma. 27 netlik"
+        " tabloyu hatırla."
+    ),
+    (
+        "95. Reading skill çalışmak yerine telefonuna bakıyorsan o kampüse asla"
+        " giremezsin."
+    ),
+    (
+        "96. Paragraf çözmekten kaçıyorsan zaten başarısızsın. 5 saatlik programı"
+        " bozma göt."
+    ),
+    (
+        "97. Rakip biçme gününde deneme çözüp analiz yapmazsan rakiplerin seni"
+        " ezer geçer."
+    ),
+    (
+        "98. Masadan kaçtığın an Fatih Kampüsü senden uzaklaşır. Neşter’i"
+        " unutma, otur çalış."
+    ),
+    (
+        "99. 27 netlik o utancı yüzüne tükürüyorum. Hâlâ aynı iradesiz orospu"
+        " çocuğusun, kalk ve 5 saati doldur."
+    ),
+    (
+        "100. Beyazıt’ın o tarihi kapısından geçmek istiyorsan masaya çivilen,"
+        " rakipleri ez, neşter at, 5 saati tamamla. Yoksa 27 netlik o rezaleti"
+        " sonsuza kadar yaşarsın piç.",
+    ),
+]
+
+secilen_motivasyon = random.choice(motivasyon_cumleleri)
+
+# YKS Sayacının atılacağı saatler (07:00, 08:00, 13:00, 18:00)
+yks_saatleri = [7, 8, 13, 18]
+
+if current_hour in yks_saatleri:
+  mesaj = f"{yks_mesaji}\n\n{secilen_motivasyon}"
+  print(f"YKS Sayacı + Motivasyon gönderiliyor (Saat: {current_hour}:00)...")
 else:
-  mesaj = '🎯 2027 YKS vakti geldi, başarılar dilerim!'
+  mesaj = f"{secilen_motivasyon}"
+  print(f"Sadece Motivasyon gönderiliyor (Saat: {current_hour}:00)...")
 
-# Bilgilerin işlenmiştir
-telefon = '+905510050230'
-api_key = '8937901'
-
-encoded_mesaj = urllib.parse.quote(mesaj)
-url = f'https://api.callmebot.com/whatsapp.php?phone={telefon}&text={encoded_mesaj}&apikey={api_key}'
+# CallMeBot WhatsApp API
+phone = "5510050230"
+apikey = "8937901"
+url = f"https://api.callmebot.com/whatsapp.php?phone={phone}&text={requests.utils.quote(mesaj)}&apikey={apikey}"
 
 response = requests.get(url)
-print(response.text)
+if response.status_code == 200:
+  print("Mesaj başarıyla gönderildi!")
+else:
+  print("Hata oluştu:", response.text)
+  
